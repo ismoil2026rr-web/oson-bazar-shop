@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSON_BAZAR — Admin Panel</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif;padding:20px}
+.container{max-width:850px;margin:auto}
+h1{color:#d8b45a;text-align:center}
+.card{background:#171717;border:1px solid #383020;border-radius:14px;padding:18px;margin:18px 0}
+input{width:100%;padding:13px;margin:7px 0;background:#252525;border:1px solid #555;border-radius:8px;color:white}
+button{padding:12px 16px;margin:5px 3px;border:0;border-radius:8px;background:#d8b45a;color:#111;font-weight:bold;cursor:pointer}
+.delete{background:#a83232;color:white}
+.edit{background:#444;color:white}
+.product{border-bottom:1px solid #444;padding:13px 0}
+.small{color:#bbb;font-size:13px}
+#status{color:#d8b45a}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>OSON_BAZAR</h1>
+<p style="text-align:center;color:#d8b45a">ADMIN PANEL</p>
+
+<div class="card">
+<h3>Admin PIN</h3>
+<input id="pin" type="password" placeholder="Admin PIN kodini kiriting">
+<p class="small">PIN — Apps Script sozlamasidagi ADMIN_PIN bilan bir xil bo‘lishi kerak.</p>
+</div>
+
+<div class="card">
+<h3 id="formTitle">Mahsulot qo‘shish</h3>
+<input id="name" placeholder="Mahsulot nomi">
+<input id="category" placeholder="Kategoriya">
+<input id="price" type="number" placeholder="Narxi (so‘m)">
+<input id="months" type="number" placeholder="Muddat (oy)">
+<input id="image" placeholder="Rasm havolasi (ixtiyoriy)">
+<button onclick="saveProduct()">Saqlash</button>
+<button class="edit" onclick="clearForm()">Tozalash</button>
+<p id="status"></p>
+</div>
+
+<div class="card">
+<h3>Mahsulotlar ro‘yxati</h3>
+<button onclick="loadProducts()">Ro‘yxatni yangilash</button>
+<div id="products">Yuklanmoqda...</div>
+</div>
+</div>
+
+<script>
+const API="https://script.google.com/macros/s/AKfycbyQ4QCo-fmbwvMInEggLIdMMYpsCw_tBg4KKbCZEhxzTnsuMeMn5wYB0HDBUn_LCZL7/exec";
+
+let editingId=null;
+let products=[];
+
+async function loadProducts(){
+ const box=document.getElementById("products");
+ box.textContent="Yuklanmoqda...";
+ try{
+  const response=await fetch(API+"?action=products");
+  products=await response.json();
+  box.innerHTML="";
+  if(!products.length){
+   box.textContent="Hozircha mahsulot yo‘q.";
+   return;
+  }
+  products.forEach(p=>{
+   const item=document.createElement("div");
+   item.className="product";
+   const title=document.createElement("b");
+   title.textContent=p.name;
+   const info=document.createElement("p");
+   info.className="small";
+   info.textContent=p.category+" | "+Number(p.price).toLocaleString("uz-UZ")+" so‘m | "+p.months+" oy";
+   const edit=document.createElement("button");
+   edit.className="edit";
+   edit.textContent="Tahrirlash";
+   edit.onclick=()=>editProduct(p.id);
+   const del=document.createElement("button");
+   del.className="delete";
+   del.textContent="O‘chirish";
+   del.onclick=()=>deleteProduct(p.id);
+   item.append(title,info,edit,del);
+   box.appendChild(item);
+  });
+ }catch(e){
+  box.textContent="Xatolik: mahsulotlarni yuklab bo‘lmadi.";
+ }
+}
+
+async function sendData(data){
+ await fetch(API,{
+  method:"POST",
+  mode:"no-cors",
+  headers:{"Content-Type":"text/plain;charset=utf-8"},
+  body:JSON.stringify(data)
+ });
+}
+
+async function saveProduct(){
+ const pin=document.getElementById("pin").value.trim();
+ const name=document.getElementById("name").value.trim();
+ const category=document.getElementById("category").value.trim();
+ const price=Number(document.getElementById("price").value);
+ const months=Number(document.getElementById("months").value);
+ const image=document.getElementById("image").value.trim();
+ const status=document.getElementById("status");
+
+ if(!pin||!name||!category||price<=0||months<=0){
+  status.textContent="Barcha kerakli maydonlarni to‘ldiring.";
+  return;
+ }
+
+ const data={
+  action:editingId?"update":"add",
+  pin,name,category,price,months,image
+ };
+ if(editingId)data.id=editingId;
+
+ status.textContent="So‘rov yuborilmoqda...";
+ try{
+  await sendData(data);
+  status.textContent="So‘rov yuborildi. Ro‘yxatni birozdan keyin yangilang.";
+  clearForm();
+  setTimeout(loadProducts,2000);
+ }catch(e){
+  status.textContent="Ulanishda xatolik yuz berdi.";
+ }
+}
+
+function editProduct(id){
+ const p=products.find(x=>String(x.id)===String(id));
+ if(!p)return;
+ editingId=id;
+ document.getElementById("name").value=p.name;
+ document.getElementById("category").value=p.category;
+ document.getElementById("price").value=p.price;
+ document.getElementById("months").value=p.months;
+ document.getElementById("image").value=p.image||"";
+ document.getElementById("formTitle").textContent="Mahsulotni tahrirlash";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteProduct(id){
+ if(!confirm("Mahsulotni o‘chirmoqchimisiz?"))return;
+ const pin=document.getElementById("pin").value.trim();
+ if(!pin){
+  alert("Avval Admin PIN kiriting.");
+  return;
+ }
+ try{
+  await sendData({action:"delete",pin,id});
+  alert("O‘chirish so‘rovi yuborildi. Ro‘yxatni yangilang.");
+  setTimeout(loadProducts,2000);
+ }catch(e){
+  alert("Xatolik yuz berdi.");
+ }
+}
+
+function clearForm(){
+ editingId=null;
+ ["name","category","price","months","image"].forEach(id=>{
+  document.getElementById(id).value="";
+ });
+ document.getElementById("formTitle").textContent="Mahsulot qo‘shish";
+}
+
+loadProducts();
+</script>
+</body>
+</html>
+
+
+
+
