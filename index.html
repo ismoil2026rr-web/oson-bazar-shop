@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090909">
+
+<meta name="google-site-verification" content="1rc3WfjnajT-bANyHJypn4sztFf6916wbQoi3tcHmsw" />
+
 <title>OSON_BAZAR — Online Market</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
@@ -49,8 +53,10 @@ footer{text-align:center;padding:25px;color:#777;border-top:1px solid #332b1b;ma
 .modal-buttons button{flex:1}
 .cancel-btn{background:#222;color:#ddd;border-color:#555}
 #orderStatus{font-size:13px;margin-top:14px;line-height:1.5}
+
 @media(max-width:500px){
- header{padding:15px}.logo{font-size:23px}
+ header{padding:15px}
+ .logo{font-size:23px}
  main{padding:22px 13px}
  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
  .product img,.no-image{height:145px}
@@ -61,6 +67,7 @@ footer{text-align:center;padding:25px;color:#777;border-top:1px solid #332b1b;ma
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -399,35 +406,3 @@ document.getElementById("orderForm").addEventListener("submit",async function(e)
   sendButton.disabled=false;
  }
 });
-
-document.getElementById("search").addEventListener("input",renderProducts);
-
-document.getElementById("orderModal").addEventListener("click",function(e){
- if(e.target===this)closeOrderModal();
-});
-
-async function loadProducts(){
- const loading=document.getElementById("loading");
- loading.hidden=false;
- loading.textContent=translations[lang].loading;
-
- try{
-  const data=await getProducts();
-  if(!Array.isArray(data))throw new Error("Noto‘g‘ri javob");
-
-  products=data;
-  loading.hidden=true;
-  renderCategories();
-  renderProducts();
- }catch(error){
-  loading.hidden=false;
-  loading.textContent=translations[lang].error;
- }
-}
-
-setLang("uz");
-loadProducts();
-</script>
-</body>
-</html>
-
