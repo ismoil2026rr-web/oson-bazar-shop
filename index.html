@@ -1,475 +1,187 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090909">
 <title>OSON_BAZAR — Online Market</title>
-
 <style>
-:root{
-  --bg:#090909;
-  --panel:#141414;
-  --panel2:#1c1c1c;
-  --gold:#d8b45a;
-  --gold2:#f4d98c;
-  --muted:#aaa;
-  --line:#35302a
-}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:#f7f4ec;
-  font-family:Arial,Helvetica,sans-serif
-}
-header{
-  position:sticky;
-  top:0;
-  z-index:5;
-  background:#090909ed;
-  border-bottom:1px solid var(--line);
-  backdrop-filter:blur(12px)
-}
-.wrap{
-  max-width:1120px;
-  margin:auto;
-  padding:0 18px
-}
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:17px 0
-}
-.brand{
-  font-size:22px;
-  font-weight:900;
-  letter-spacing:2px;
-  color:var(--gold2)
-}
-.brand span{color:#fff}
-.actions{
-  display:flex;
-  gap:8px;
-  align-items:center
-}
-button,select,input,textarea{font:inherit}
-.btn{
-  border:1px solid var(--gold);
-  background:transparent;
-  color:var(--gold2);
-  border-radius:10px;
-  padding:10px 14px;
-  cursor:pointer
-}
-.btn.gold{
-  background:linear-gradient(135deg,#f4d98c,#b88b32);
-  color:#17120a;
-  border:0;
-  font-weight:800
-}
-.btn:disabled{
-  opacity:.6;
-  cursor:not-allowed
-}
-.hero{
-  padding:58px 0 38px;
-  background:radial-gradient(ellipse at 80% 0%,#5a431c55,transparent 48%)
-}
-.eyebrow{
-  color:var(--gold);
-  font-size:12px;
-  letter-spacing:3px;
-  font-weight:bold
-}
-h1{
-  font-size:clamp(34px,7vw,62px);
-  line-height:1.04;
-  margin:14px 0;
-  max-width:700px
-}
-.hero p{
-  color:#c8c3b7;
-  line-height:1.6;
-  max-width:540px
-}
-.tools{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:26px 0 18px
-}
-input,select,textarea{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  color:#fff;
-  border-radius:10px;
-  padding:12px;
-  outline:none
-}
-.search{flex:1;min-width:190px}
-.categories{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  padding:8px 0 18px
-}
-.chip{
-  white-space:nowrap;
-  border:1px solid var(--line);
-  border-radius:30px;
-  background:#151515;
-  color:#ddd;
-  padding:9px 15px;
-  cursor:pointer
-}
-.chip.active{
-  border-color:var(--gold);
-  color:var(--gold2);
-  background:#382b13
-}
-.section-title{
-  display:flex;
-  align-items:end;
-  justify-content:space-between;
-  gap:12px;
-  margin:24px 0 16px
-}
-h2{font-size:25px;margin:0}
-.sub{color:var(--muted);font-size:13px}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:14px;
-  padding-bottom:40px
-}
-.card{
-  background:linear-gradient(150deg,#1b1b1b,#101010);
-  border:1px solid var(--line);
-  border-radius:16px;
-  overflow:hidden
-}
-.product-art{
-  height:145px;
-  display:grid;
-  place-items:center;
-  background:radial-gradient(circle,#4a391c 0,#211a0e 40%,#141414 75%);
-  font-size:54px
-}
-.card-body{padding:15px}
-.tag{
-  font-size:11px;
-  color:var(--gold);
-  letter-spacing:1px
-}
-.card h3{font-size:17px;margin:8px 0}
-.desc{
-  font-size:13px;
-  color:#aaa;
-  min-height:34px;
-  line-height:1.4
-}
-.price-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:14px;
-  gap:8px
-}
-.price{
-  font-weight:800;
-  color:var(--gold2);
-  font-size:17px
-}
-.order{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:20px;
-  margin:8px 0 44px
-}
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px
-}
-.form-grid .wide{grid-column:1/-1}
-.note{
-  font-size:12px;
-  color:#aaa;
-  line-height:1.5
-}
-footer{
-  border-top:1px solid var(--line);
-  padding:24px 0;
-  color:#8d887e;
-  font-size:12px
-}
-.toast{
-  position:fixed;
-  bottom:18px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#292113;
-  border:1px solid var(--gold);
-  padding:12px 18px;
-  border-radius:12px;
-  display:none;
-  z-index:10;
-  max-width:90%;
-  text-align:center
-}
-@media(max-width:560px){
-  .top{align-items:flex-start}
-  .brand{font-size:18px}
-  .form-grid{grid-template-columns:1fr}
-  .form-grid .wide{grid-column:auto}
-  .hero{padding-top:40px}
-}
+body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
+header{padding:22px 16px;text-align:center;border-bottom:1px solid #44391f}
+.logo{font-size:28px;font-weight:900;color:#d8b45a;letter-spacing:2px}
+header p{color:#aaa;font-size:13px}
+.container{max-width:1100px;margin:auto;padding:20px 15px}
+h2{color:#d8b45a}
+#status{text-align:center;color:#d8b45a;padding:20px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.product{background:#171717;border:1px solid #40351f;border-radius:13px;padding:17px}
+.product img{width:100%;height:170px;object-fit:contain;border-radius:8px}
+.product h3{margin:12px 0 7px}
+.category{color:#aaa;font-size:13px}
+.price{color:#e5c36c;font-size:21px;font-weight:bold;margin:12px 0}
+.monthly{color:#ddd;font-size:14px;margin-bottom:14px}
+button{background:#d8b45a;color:#111;border:0;padding:12px 16px;border-radius:8px;font-weight:bold;cursor:pointer}
+.order{margin-top:25px;background:#171717;border:1px solid #40351f;padding:20px;border-radius:13px}
+input,textarea{width:100%;padding:13px;margin:7px 0;background:#252525;color:white;border:1px solid #555;border-radius:8px}
+footer{text-align:center;color:#888;padding:25px;font-size:13px}
 </style>
 </head>
-
 <body>
 
 <header>
-  <div class="wrap top">
-    <div class="brand">OSON<span>_</span>BAZAR</div>
-    <div class="actions">
-      <button class="btn" id="langBtn">РУС</button>
-      <button class="btn gold" onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})" data-i="orderBtn">Buyurtma</button>
-    </div>
-  </div>
+ <div class="logo">OSON_BAZAR</div>
+ <p>Qulay xaridlar — qulay to‘lovlar</p>
 </header>
 
-<main class="wrap">
+<main class="container">
+ <h2>Mahsulotlar</h2>
+ <div id="status">Mahsulotlar yuklanmoqda...</div>
+ <div class="products" id="products"></div>
 
-<section class="hero">
-  <div class="eyebrow">OSON_BAZAR • ONLINE MARKET</div>
-  <h1 data-i="headline">Kerakli mahsulotlar — bir joyda.</h1>
-  <p data-i="intro">OSON_BAZAR internet-do‘konida turli mahsulotlarni ko‘ring, tanlang va buyurtma qoldiring.</p>
-
-  <div class="tools">
-    <input class="search" id="search" placeholder="Mahsulot qidirish..." data-ph="search">
-    <button class="btn gold" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})" data-i="browse">Katalogni ko‘rish</button>
-  </div>
-</section>
-
-<div class="section-title" id="products">
-  <div>
-    <h2 data-i="catalog">Mahsulotlar katalogi</h2>
-    <div class="sub" data-i="catalogSub">Namunaviy mahsulotlar — keyin o‘zingiznikiga almashtiramiz</div>
-  </div>
-</div>
-
-<div class="categories" id="categories"></div>
-<div class="grid" id="grid"></div>
-
-<section class="order" id="order">
-  <div class="section-title">
-    <div>
-      <h2 data-i="orderTitle">Buyurtma qoldirish</h2>
-      <div class="sub" data-i="orderSub">Ma’lumotlaringizni kiriting</div>
-    </div>
-  </div>
-
-  <form id="orderForm" class="form-grid">
-    <input name="name" required placeholder="Ismingiz" data-ph="name">
-    <input name="phone" required type="tel" placeholder="+998 90 123 45 67" data-ph="phone">
-    <input class="wide" name="product" id="chosenProduct" placeholder="Qaysi mahsulot kerak?" data-ph="product" required>
-    <textarea class="wide" name="comment" rows="3" placeholder="Qo‘shimcha izoh (ixtiyoriy)" data-ph="comment"></textarea>
-    <button class="btn gold wide" type="submit" data-i="send">Buyurtma yuborish</button>
-  </form>
-
-  <p class="note" data-i="privacy">Buyurtmangiz Telegram orqali yuboriladi.</p>
-</section>
-
+ <div class="order" id="order">
+  <h2>Buyurtma berish</h2>
+  <p id="selected">Mahsulot tanlanmagan</p>
+  <input id="customer" placeholder="Ismingiz">
+  <input id="phone" type="tel" placeholder="Telefon raqamingiz">
+  <textarea id="comment" placeholder="Izoh (ixtiyoriy)"></textarea>
+  <button onclick="sendOrder()">Buyurtma yuborish</button>
+  <p id="orderStatus"></p>
+ </div>
 </main>
 
-<footer>
-  <div class="wrap">
-    © 2026 OSON_BAZAR.
-    <span data-i="footer">Barcha huquqlar himoyalangan.</span>
-  </div>
-</footer>
-
-<div class="toast" id="toast"></div>
+<footer>© OSON_BAZAR — Barcha huquqlar himoyalangan</footer>
 
 <script>
-const products=[
- {name:"Smart soat",cat:"Elektronika",price:"249 000 so‘m",icon:"⌚",desc:"Kundalik foydalanish uchun qulay model"},
- {name:"Simsiz quloqchin",cat:"Elektronika",price:"179 000 so‘m",icon:"🎧",desc:"Ixcham va qulay aksessuar"},
- {name:"Uy uchun organizer",cat:"Uy-ro‘zg‘or",price:"89 000 so‘m",icon:"🗂️",desc:"Buyumlarni tartibli saqlash uchun"},
- {name:"Termos",cat:"Uy-ro‘zg‘or",price:"119 000 so‘m",icon:"☕",desc:"Issiq va sovuq ichimliklar uchun"},
- {name:"Sport sumkasi",cat:"Aksessuarlar",price:"159 000 so‘m",icon:"🎒",desc:"Safar va mashg‘ulotlar uchun"},
- {name:"Quyosh ko‘zoynagi",cat:"Aksessuarlar",price:"99 000 so‘m",icon:"🕶️",desc:"Oddiy va zamonaviy dizayn"}
-];
-
-const dict={
- uz:{
-  orderBtn:"Buyurtma",
-  headline:"Kerakli mahsulotlar — bir joyda.",
-  intro:"OSON_BAZAR internet-do‘konida turli mahsulotlarni ko‘ring, tanlang va buyurtma qoldiring.",
-  search:"Mahsulot qidirish...",
-  browse:"Katalogni ko‘rish",
-  catalog:"Mahsulotlar katalogi",
-  catalogSub:"Namunaviy mahsulotlar — keyin o‘zingiznikiga almashtiramiz",
-  orderTitle:"Buyurtma qoldirish",
-  orderSub:"Ma’lumotlaringizni kiriting",
-  name:"Ismingiz",
-  phone:"Telefon raqamingiz",
-  product:"Qaysi mahsulot kerak?",
-  comment:"Qo‘shimcha izoh (ixtiyoriy)",
-  send:"Buyurtma yuborish",
-  privacy:"Buyurtmangiz Telegram orqali yuboriladi.",
-  footer:"Barcha huquqlar himoyalangan.",
-  all:"Barchasi",
-  add:"Tanlash",
-  added:"Tanlandi"
- },
- ru:{
-  orderBtn:"Заказать",
-  headline:"Нужные товары — в одном месте.",
-  intro:"Выбирайте разные товары в интернет-магазине OSON_BAZAR и оставляйте заявку.",
-  search:"Поиск товара...",
-  browse:"Открыть каталог",
-  catalog:"Каталог товаров",
-  catalogSub:"Демонстрационные товары — позже заменим на ваши",
-  orderTitle:"Оставить заявку",
-  orderSub:"Введите свои данные",
-  name:"Ваше имя",
-  phone:"Номер телефона",
-  product:"Какой товар вас интересует?",
-  comment:"Комментарий (необязательно)",
-  send:"Отправить заявку",
-  privacy:"Ваша заявка отправляется через Telegram.",
-  footer:"Все права защищены.",
-  all:"Все",
-  add:"Выбрать",
-  added:"Выбрано"
- }
-};
-
-let lang="uz";
-let category="all";
-
-function t(k){
-  return dict[lang][k]||k;
-}
-
-function render(){
-  document.querySelectorAll("[data-i]").forEach(el=>{
-    el.textContent=t(el.dataset.i);
-  });
-
-  document.querySelectorAll("[data-ph]").forEach(el=>{
-    el.placeholder=t(el.dataset.ph);
-  });
-
-  document.getElementById("langBtn").textContent=lang==="uz"?"РУС":"UZ";
-
-  const cats=["all",...new Set(products.map(p=>p.cat))];
-
-  document.getElementById("categories").innerHTML=cats.map(c=>
-    `<button class="chip ${category===c?'active':''}" onclick="category='${c}';render()">${c==="all"?t("all"):c}</button>`
-  ).join("");
-
-  const q=document.getElementById("search").value.toLowerCase();
-
-  const shown=products.filter(p=>
-    (category==="all"||p.cat===category)&&
-    (p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q))
-  );
-
-  document.getElementById("grid").innerHTML=shown.map(p=>
-    `<article class="card">
-      <div class="product-art">${p.icon}</div>
-      <div class="card-body">
-        <div class="tag">${p.cat.toUpperCase()}</div>
-        <h3>${p.name}</h3>
-        <div class="desc">${p.desc}</div>
-        <div class="price-row">
-          <span class="price">${p.price}</span>
-          <button class="btn" onclick="choose('${p.name.replace(/'/g,"\\'")}')">${t("add")}</button>
-        </div>
-      </div>
-    </article>`
-  ).join("")||`<p>${lang==="uz"?"Mahsulot topilmadi":"Товар не найден"}</p>`;
-}
-
-function choose(name){
-  document.getElementById("chosenProduct").value=name;
-  document.getElementById("order").scrollIntoView({behavior:"smooth"});
-  show(t("added")+": "+name);
-}
-
-function show(msg){
-  const el=document.getElementById("toast");
-  el.textContent=msg;
-  el.style.display="block";
-  setTimeout(()=>el.style.display="none",3000);
-}
-
-document.getElementById("langBtn").onclick=()=>{
-  lang=lang==="uz"?"ru":"uz";
-  render();
-};
-
-document.getElementById("search").addEventListener("input",render);
-
-// YANGI APPS SCRIPT API MANZILI
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbyQ4QCo-fmbwvMInEggLIdMMYpsCw_tBg4KKbCZEhxzTnsuMeMn5wYB0HDBUn_LCZL7/exec";
 
-// Telegram buyurtma ulanishi
-document.getElementById("orderForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+let products=[];
+let selectedProduct=null;
 
-  const d=new FormData(e.target);
+function money(n){
+ return Number(n).toLocaleString("uz-UZ")+" so‘m";
+}
 
-  const order={
-    name:d.get("name"),
-    phone:d.get("phone"),
-    product:d.get("product"),
-    comment:d.get("comment")
+function loadProducts(){
+ const callbackName="osonProductsCallback";
+ const old=document.getElementById("productsScript");
+ if(old)old.remove();
+
+ window[callbackName]=function(data){
+  products=Array.isArray(data)?data:[];
+  renderProducts();
+  delete window[callbackName];
+ };
+
+ const script=document.createElement("script");
+ script.id="productsScript";
+ script.src=SCRIPT_URL+"?action=products&callback="+callbackName;
+ script.onerror=function(){
+  document.getElementById("status").textContent=
+   "Mahsulotlarni yuklashda xatolik. Sahifani yangilang.";
+ };
+ document.body.appendChild(script);
+}
+
+function renderProducts(){
+ const box=document.getElementById("products");
+ const status=document.getElementById("status");
+ box.innerHTML="";
+
+ if(products.length===0){
+  status.textContent="Hozircha mahsulot mavjud emas.";
+  return;
+ }
+
+ status.textContent="";
+
+ products.forEach(p=>{
+  const card=document.createElement("div");
+  card.className="product";
+
+  if(p.image){
+   const img=document.createElement("img");
+   img.src=p.image;
+   img.alt=p.name;
+   img.onerror=()=>img.style.display="none";
+   card.appendChild(img);
+  }
+
+  const name=document.createElement("h3");
+  name.textContent=p.name;
+
+  const category=document.createElement("div");
+  category.className="category";
+  category.textContent=p.category;
+
+  const price=document.createElement("div");
+  price.className="price";
+  price.textContent=money(p.price);
+
+  const monthly=document.createElement("div");
+  monthly.className="monthly";
+  const months=Number(p.months);
+  monthly.textContent=months>0
+   ? months+" oyga: "+money(Math.ceil(Number(p.price)/months))+" / oy"
+   : "Muddat belgilanmagan";
+
+  const btn=document.createElement("button");
+  btn.textContent="Buyurtma berish";
+  btn.onclick=()=>{
+   selectedProduct=p;
+   document.getElementById("selected").textContent=
+    "Tanlangan mahsulot: "+p.name;
+   document.getElementById("order").scrollIntoView({behavior:"smooth"});
   };
 
-  if(!order.product||!order.product.trim()){
-    show(lang==="uz"?"Mahsulot nomini kiriting!":"Введите название товара!");
-    return;
-  }
+  card.append(name,category,price,monthly,btn);
+  box.appendChild(card);
+ });
+}
 
-  const submitButton=e.target.querySelector('button[type="submit"]');
-  submitButton.disabled=true;
+async function sendOrder(){
+ if(!selectedProduct){
+  alert("Avval mahsulot tanlang.");
+  return;
+ }
 
-  try{
-    await fetch(SCRIPT_URL,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{
-        "Content-Type":"text/plain;charset=utf-8"
-      },
-      body:JSON.stringify(order)
-    });
+ const name=document.getElementById("customer").value.trim();
+ const phone=document.getElementById("phone").value.trim();
+ const comment=document.getElementById("comment").value.trim();
 
-    show(lang==="uz"
-      ?"Buyurtma so‘rovi yuborildi!"
-      :"Запрос на отправку заявки отправлен!");
+ if(!name||!phone){
+  alert("Ism va telefon raqamingizni kiriting.");
+  return;
+ }
 
-    e.target.reset();
+ const data={
+  name:name,
+  phone:phone,
+  product:selectedProduct.name,
+  comment:comment
+ };
 
-  }catch(error){
-    show(lang==="uz"
-      ?"Xatolik! Qayta urinib ko‘ring."
-      :"Ошибка! Попробуйте ещё раз!");
+ document.getElementById("orderStatus").textContent=
+  "Buyurtma so‘rovi yuborilmoqda...";
 
-  }finally{
-    submitButton.disabled=false;
-  }
-});
+ try{
+  await fetch(SCRIPT_URL,{
+   method:"POST",
+   mode:"no-cors",
+   headers:{"Content-Type":"text/plain;charset=utf-8"},
+   body:JSON.stringify(data)
+  });
 
-render();
+  document.getElementById("orderStatus").textContent=
+   "So‘rov yuborildi. Buyurtma qabul qilinganini operator tasdiqlaydi.";
+ }catch(e){
+  document.getElementById("orderStatus").textContent=
+   "Ulanishda xatolik. Qayta urinib ko‘ring.";
+ }
+}
+
+loadProducts();
 </script>
-
 </body>
 </html>
+
