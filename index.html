@@ -5,92 +5,371 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090909">
 <title>OSON_BAZAR — Online Market</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
-header{background:#101010;border-bottom:1px solid #5b4924;padding:20px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+body{
+ margin:0;background:#090909;color:#fff;
+ font-family:Arial,sans-serif
+}
+header{
+ background:#101010;border-bottom:1px solid #5b4924;
+ padding:18px 5%;display:flex;align-items:center;
+ justify-content:space-between;gap:15px;flex-wrap:wrap
+}
 .logo{font-size:27px;font-weight:900;color:#d8b45a;letter-spacing:2px}
+.tagline{font-size:12px;color:#999;margin-top:5px}
 .actions{display:flex;gap:8px}
-button{cursor:pointer;border:1px solid #d8b45a;border-radius:7px;padding:10px 15px;background:#d8b45a;color:#111;font-weight:bold}
+button{
+ cursor:pointer;border:1px solid #d8b45a;border-radius:7px;
+ padding:10px 15px;background:#d8b45a;color:#111;font-weight:bold
+}
 button.active{background:#111;color:#d8b45a}
-main{max-width:1100px;margin:auto;padding:35px 18px}
-.search{width:100%;padding:15px;background:#191919;border:1px solid #514326;border-radius:9px;color:white;font-size:15px}
-h2{color:#d8b45a;margin-top:35px}
-.categories{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
-.category{padding:12px 17px;border:1px solid #514326;border-radius:8px;color:#ddd;background:#171717}
-.empty{margin-top:30px;padding:65px 15px;text-align:center;background:#151515;border:1px solid #393020;border-radius:13px}
-.empty h3{color:#d8b45a;font-size:21px}
-.empty p{color:#aaa}
-footer{text-align:center;padding:25px;color:#777;border-top:1px solid #332b1b;margin-top:60px}
+main{max-width:1150px;margin:auto;padding:30px 18px}
+.search{
+ width:100%;padding:15px;background:#191919;
+ border:1px solid #514326;border-radius:9px;
+ color:white;font-size:15px;outline:none
+}
+h2{color:#d8b45a;margin-top:30px}
+.categories{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.category{
+ padding:11px 15px;border:1px solid #514326;
+ border-radius:8px;color:#ddd;background:#171717;
+ cursor:pointer
+}
+.category.active{background:#d8b45a;color:#111}
+.grid{
+ display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+ gap:17px;margin-top:25px
+}
+.product{
+ background:#171717;border:1px solid #44391f;
+ border-radius:12px;overflow:hidden
+}
+.product img{
+ width:100%;height:190px;object-fit:contain;
+ background:#fff;display:block
+}
+.no-image{
+ height:190px;display:flex;align-items:center;
+ justify-content:center;color:#888;background:#202020
+}
+.product-info{padding:15px}
+.product-name{font-size:16px;font-weight:bold;min-height:38px}
+.product-category{font-size:12px;color:#aaa;margin-top:7px}
+.total-price{color:#fff;font-size:17px;font-weight:bold;margin-top:14px}
+.monthly{
+ color:#d8b45a;font-size:14px;font-weight:bold;margin-top:8px
+}
+.term{font-size:12px;color:#aaa;margin-top:5px}
+.empty{
+ margin-top:25px;padding:55px 15px;text-align:center;
+ background:#151515;border:1px solid #393020;border-radius:13px;
+ color:#aaa
+}
+.empty h3{color:#d8b45a}
+#loading{color:#d8b45a;text-align:center;padding:30px}
+footer{
+ text-align:center;padding:25px;color:#777;
+ border-top:1px solid #332b1b;margin-top:55px
+}
+@media(max-width:500px){
+ header{padding:15px}
+ .logo{font-size:23px}
+ main{padding:22px 13px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .product img,.no-image{height:145px}
+ .product-info{padding:10px}
+ .product-name{font-size:14px}
+ .total-price{font-size:14px}
+}
 </style>
 </head>
+
 <body>
+
 <header>
  <div>
   <div class="logo">OSON_BAZAR</div>
-  <div style="font-size:12px;color:#999;margin-top:5px" id="tagline">Qulay xaridlar — qulay to‘lovlar</div>
+  <div class="tagline" id="tagline">Qulay xaridlar — qulay to‘lovlar</div>
  </div>
  <div class="actions">
-  <button class="active" id="uz" onclick="setLang('uz')">UZ</button>
-  <button class="active" id="ru" onclick="setLang('ru')">RU</button>
+  <button id="uz" onclick="setLang('uz')">UZ</button>
+  <button id="ru" onclick="setLang('ru')">RU</button>
  </div>
 </header>
 
 <main>
+
  <input class="search" id="search" placeholder="Mahsulot qidirish...">
 
  <h2 id="catTitle">Kategoriyalar</h2>
- <div class="categories">
-  <div class="category" id="c1">Elektronika</div>
-  <div class="category" id="c2">Uy-ro‘zg‘or</div>
-  <div class="category" id="c3">Aksessuarlar</div>
-  <div class="category" id="c4">Boshqa mahsulotlar</div>
- </div>
+ <div class="categories" id="categories"></div>
 
- <div class="empty">
+ <h2 id="productsTitle">Mahsulotlar</h2>
+ <div id="loading">Mahsulotlar yuklanmoqda...</div>
+ <div class="grid" id="products"></div>
+ <div class="empty" id="empty" hidden>
   <h3 id="emptyTitle">Hozircha mahsulotlar yo‘q</h3>
   <p id="emptyText">Yangi mahsulotlar tez orada joylashtiriladi.</p>
  </div>
+
 </main>
 
 <footer>© OSON_BAZAR</footer>
 
 <script>
-function setLang(lang){
- document.documentElement.lang=lang;
- document.getElementById("uz").classList.toggle("active",lang==="uz");
- document.getElementById("ru").classList.toggle("active",lang==="ru");
+const API="https://script.google.com/macros/s/AKfycbyQ4QCo-fmbwvMInEggLIdMMYpsCw_tBg4KKbCZEhxzTnsuMeMn5wYB0HDBUn_LCZL7/exec";
 
- const t={
+let products=[];
+let lang="uz";
+let selectedCategory="all";
+
+const translations={
  uz:{
- tagline:"Qulay xaridlar — qulay to‘lovlar",
- search:"Mahsulot qidirish...",
- cat:"Kategoriyalar",
- c1:"Elektronika",c2:"Uy-ro‘zg‘or",
- c3:"Aksessuarlar",c4:"Boshqa mahsulotlar",
- empty:"Hozircha mahsulotlar yo‘q",
- text:"Yangi mahsulotlar tez orada joylashtiriladi."
+  tagline:"Qulay xaridlar — qulay to‘lovlar",
+  search:"Mahsulot qidirish...",
+  cat:"Kategoriyalar",
+  products:"Mahsulotlar",
+  all:"Barchasi",
+  empty:"Hozircha mahsulotlar yo‘q",
+  emptyText:"Yangi mahsulotlar tez orada joylashtiriladi.",
+  loading:"Mahsulotlar yuklanmoqda...",
+  error:"Mahsulotlarni yuklab bo‘lmadi. Sahifani yangilang.",
+  total:"Umumiy narx:",
+  monthly:"Oylik to‘lov:",
+  term:"Muddat:",
+  months:"oy",
+  noImage:"Rasm mavjud emas",
+  notFound:"Mahsulot topilmadi"
  },
  ru:{
- tagline:"Удобные покупки — удобная оплата",
- search:"Поиск товаров...",
- cat:"Категории",
- c1:"Электроника",c2:"Для дома",
- c3:"Аксессуары",c4:"Другие товары",
- empty:"Пока товаров нет",
- text:"Новые товары скоро появятся."
+  tagline:"Удобные покупки — удобная оплата",
+  search:"Поиск товаров...",
+  cat:"Категории",
+  products:"Товары",
+  all:"Все",
+  empty:"Пока товаров нет",
+  emptyText:"Новые товары скоро появятся.",
+  loading:"Загрузка товаров...",
+  error:"Не удалось загрузить товары. Обновите страницу.",
+  total:"Полная цена:",
+  monthly:"Ежемесячный платёж:",
+  term:"Срок:",
+  months:"мес.",
+  noImage:"Нет изображения",
+  notFound:"Товар не найден"
  }
- };
- const x=t[lang];
- document.getElementById("tagline").textContent=x.tagline;
- document.getElementById("search").placeholder=x.search;
- document.getElementById("catTitle").textContent=x.cat;
- ["c1","c2","c3","c4"].forEach((id,i)=>document.getElementById(id).textContent=x[id]);
- document.getElementById("emptyTitle").textContent=x.empty;
- document.getElementById("emptyText").textContent=x.text;
+};
+
+function formatPrice(value){
+ return Number(value||0).toLocaleString("uz-UZ")+" so‘m";
 }
+
+function getProducts(){
+ return new Promise((resolve,reject)=>{
+  const callback="marketCallback_"+Date.now();
+  const script=document.createElement("script");
+
+  const timer=setTimeout(()=>{
+   delete window[callback];
+   script.remove();
+   reject(new Error("Vaqt tugadi"));
+  },15000);
+
+  window[callback]=data=>{
+   clearTimeout(timer);
+   delete window[callback];
+   script.remove();
+   resolve(data);
+  };
+
+  script.onerror=()=>{
+   clearTimeout(timer);
+   delete window[callback];
+   script.remove();
+   reject(new Error("Ulanish xatosi"));
+  };
+
+  script.src=API+"?action=products&callback="+callback+"&_="+Date.now();
+  document.body.appendChild(script);
+ });
+}
+
+function renderCategories(){
+ const box=document.getElementById("categories");
+ box.innerHTML="";
+
+ const allButton=document.createElement("button");
+ allButton.className="category"+(selectedCategory==="all"?" active":"");
+ allButton.textContent=translations[lang].all;
+ allButton.onclick=()=>{
+  selectedCategory="all";
+  renderCategories();
+  renderProducts();
+ };
+ box.appendChild(allButton);
+
+ const categories=[...new Set(
+  products.map(p=>p.category).filter(Boolean)
+ )];
+
+ categories.forEach(category=>{
+  const button=document.createElement("button");
+  button.className="category"+(
+   selectedCategory===category?" active":""
+  );
+  button.textContent=category;
+  button.onclick=()=>{
+   selectedCategory=category;
+   renderCategories();
+   renderProducts();
+  };
+  box.appendChild(button);
+ });
+}
+
+function renderProducts(){
+ const box=document.getElementById("products");
+ const empty=document.getElementById("empty");
+ const search=document.getElementById("search").value.toLowerCase().trim();
+
+ box.innerHTML="";
+
+ const filtered=products.filter(p=>{
+  const matchesSearch=
+   String(p.name||"").toLowerCase().includes(search)||
+   String(p.category||"").toLowerCase().includes(search);
+
+  const matchesCategory=
+   selectedCategory==="all"||p.category===selectedCategory;
+
+  return matchesSearch&&matchesCategory;
+ });
+
+ if(!filtered.length){
+  empty.hidden=false;
+  document.getElementById("emptyTitle").textContent=
+   products.length?translations[lang].notFound:translations[lang].empty;
+  document.getElementById("emptyText").textContent=
+   products.length?"":translations[lang].emptyText;
+  return;
+ }
+
+ empty.hidden=true;
+
+ filtered.forEach(p=>{
+  const card=document.createElement("div");
+  card.className="product";
+
+  if(p.image){
+   const img=document.createElement("img");
+   img.src=p.image;
+   img.alt=p.name;
+   img.loading="lazy";
+   img.onerror=()=>{
+    const placeholder=document.createElement("div");
+    placeholder.className="no-image";
+    placeholder.textContent=translations[lang].noImage;
+    img.replaceWith(placeholder);
+   };
+   card.appendChild(img);
+  }else{
+   const placeholder=document.createElement("div");
+   placeholder.className="no-image";
+   placeholder.textContent=translations[lang].noImage;
+   card.appendChild(placeholder);
+  }
+
+  const info=document.createElement("div");
+  info.className="product-info";
+
+  const name=document.createElement("div");
+  name.className="product-name";
+  name.textContent=p.name||"";
+
+  const category=document.createElement("div");
+  category.className="product-category";
+  category.textContent=p.category||"";
+
+  const total=document.createElement("div");
+  total.className="total-price";
+  total.textContent=translations[lang].total+" "+formatPrice(p.price);
+
+  const monthly=document.createElement("div");
+  monthly.className="monthly";
+
+  const price=Number(p.price)||0;
+  const months=Number(p.months)||0;
+
+  if(months>0){
+   const payment=Math.ceil(price/months);
+   monthly.textContent=translations[lang].monthly+" "+
+    formatPrice(payment);
+  }else{
+   monthly.textContent="";
+  }
+
+  const term=document.createElement("div");
+  term.className="term";
+  term.textContent=months>0?
+   translations[lang].term+" "+months+" "+translations[lang].months:"";
+
+  info.append(name,category,total,monthly,term);
+  card.appendChild(info);
+  box.appendChild(card);
+ });
+}
+
+function setLang(language){
+ lang=language;
+ document.documentElement.lang=language;
+
+ document.getElementById("uz").classList.toggle("active",language==="uz");
+ document.getElementById("ru").classList.toggle("active",language==="ru");
+
+ const t=translations[language];
+
+ document.getElementById("tagline").textContent=t.tagline;
+ document.getElementById("search").placeholder=t.search;
+ document.getElementById("catTitle").textContent=t.cat;
+ document.getElementById("productsTitle").textContent=t.products;
+ document.getElementById("loading").textContent=t.loading;
+
+ renderCategories();
+ renderProducts();
+}
+
+async function loadProducts(){
+ const loading=document.getElementById("loading");
+ loading.hidden=false;
+ loading.textContent=translations[lang].loading;
+
+ try{
+  const data=await getProducts();
+
+  if(!Array.isArray(data))throw new Error("Noto‘g‘ri javob");
+
+  products=data;
+  loading.hidden=true;
+
+  renderCategories();
+  renderProducts();
+
+ }catch(error){
+  loading.hidden=false;
+  loading.textContent=translations[lang].error;
+ }
+}
+
+document.getElementById("search").addEventListener("input",renderProducts);
+
 setLang("uz");
+loadProducts();
 </script>
+
 </body>
 </html>
+
 
