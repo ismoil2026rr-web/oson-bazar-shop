@@ -70,6 +70,10 @@ button,select,input,textarea{font:inherit}
   border:0;
   font-weight:800
 }
+.btn:disabled{
+  opacity:.6;
+  cursor:not-allowed
+}
 .hero{
   padding:58px 0 38px;
   background:radial-gradient(ellipse at 80% 0%,#5a431c55,transparent 48%)
@@ -414,9 +418,10 @@ document.getElementById("langBtn").onclick=()=>{
 
 document.getElementById("search").addEventListener("input",render);
 
-// Telegram buyurtma ulanishi
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbw5isWC5tIDlCXx_nfhE4heXet6R3sX9lkHsrJ-eV7ps3pRVzRvcrzE0Q5PSyp4npPsJw/exec";
+// YANGI APPS SCRIPT API MANZILI
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbyQ4QCo-fmbwvMInEggLIdMMYpsCw_tBg4KKbCZEhxzTnsuMeMn5wYB0HDBUn_LCZL7/exec";
 
+// Telegram buyurtma ulanishi
 document.getElementById("orderForm").addEventListener("submit",async e=>{
   e.preventDefault();
 
@@ -468,5 +473,3 @@ render();
 
 </body>
 </html>
-
-
