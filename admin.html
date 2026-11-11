@@ -12,11 +12,14 @@ h1{color:#d8b45a;text-align:center}
 .card{background:#171717;border:1px solid #383020;border-radius:14px;padding:18px;margin:18px 0}
 input{width:100%;padding:13px;margin:7px 0;background:#252525;border:1px solid #555;border-radius:8px;color:white}
 button{padding:12px 16px;margin:5px 3px;border:0;border-radius:8px;background:#d8b45a;color:#111;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
 .delete{background:#a83232;color:white}
 .edit{background:#444;color:white}
 .product{border-bottom:1px solid #444;padding:13px 0}
+.product img{width:90px;height:90px;object-fit:cover;border-radius:8px;margin:8px 0}
 .small{color:#bbb;font-size:13px}
-#status{color:#d8b45a}
+#status{color:#d8b45a;line-height:1.5}
+#preview{max-width:180px;max-height:180px;display:none;margin:10px 0;border-radius:8px}
 </style>
 </head>
 <body>
@@ -27,7 +30,7 @@ button{padding:12px 16px;margin:5px 3px;border:0;border-radius:8px;background:#d
 <div class="card">
 <h3>Admin PIN</h3>
 <input id="pin" type="password" placeholder="Admin PIN kodini kiriting">
-<p class="small">PIN — Apps Script sozlamasidagi ADMIN_PIN bilan bir xil bo‘lishi kerak.</p>
+<p class="small">PIN — Code.gs ichidagi ADMIN_PIN bilan bir xil bo‘lishi kerak.</p>
 </div>
 
 <div class="card">
@@ -36,7 +39,14 @@ button{padding:12px 16px;margin:5px 3px;border:0;border-radius:8px;background:#d
 <input id="category" placeholder="Kategoriya">
 <input id="price" type="number" placeholder="Narxi (so‘m)">
 <input id="months" type="number" placeholder="Muddat (oy)">
-<input id="image" placeholder="Rasm havolasi (ixtiyoriy)">
+
+<h4>Mahsulot rasmini tanlang</h4>
+<input id="imageFile" type="file" accept="image/*">
+<img id="preview" alt="Rasm ko‘rinishi">
+<button type="button" id="uploadBtn" onclick="uploadImage()">Rasmni yuklash</button>
+
+<input id="image" placeholder="Rasm havolasi (avtomatik to‘ldiriladi)">
+
 <button onclick="saveProduct()">Saqlash</button>
 <button class="edit" onclick="clearForm()">Tozalash</button>
 <p id="status"></p>
@@ -58,33 +68,56 @@ let products=[];
 async function loadProducts(){
  const box=document.getElementById("products");
  box.textContent="Yuklanmoqda...";
+
  try{
   const response=await fetch(API+"?action=products");
   products=await response.json();
   box.innerHTML="";
+
   if(!products.length){
    box.textContent="Hozircha mahsulot yo‘q.";
    return;
   }
+
   products.forEach(p=>{
    const item=document.createElement("div");
    item.className="product";
+
    const title=document.createElement("b");
    title.textContent=p.name;
+
    const info=document.createElement("p");
    info.className="small";
-   info.textContent=p.category+" | "+Number(p.price).toLocaleString("uz-UZ")+" so‘m | "+p.months+" oy";
+   info.textContent=p.category+" | "+
+    Number(p.price).toLocaleString("uz-UZ")+" so‘m | "+
+    p.months+" oy";
+
+   item.append(title);
+
+   if(p.image){
+    const img=document.createElement("img");
+    img.src=p.image;
+    img.alt=p.name;
+    img.onerror=()=>img.style.display="none";
+    item.appendChild(img);
+   }
+
+   item.appendChild(info);
+
    const edit=document.createElement("button");
    edit.className="edit";
    edit.textContent="Tahrirlash";
    edit.onclick=()=>editProduct(p.id);
+
    const del=document.createElement("button");
    del.className="delete";
    del.textContent="O‘chirish";
    del.onclick=()=>deleteProduct(p.id);
-   item.append(title,info,edit,del);
+
+   item.append(edit,del);
    box.appendChild(item);
   });
+
  }catch(e){
   box.textContent="Xatolik: mahsulotlarni yuklab bo‘lmadi.";
  }
@@ -98,6 +131,158 @@ async function sendData(data){
   body:JSON.stringify(data)
  });
 }
+
+function getImageResult(key){
+ return new Promise((resolve,reject)=>{
+  const script=document.createElement("script");
+  const callbackName="imageResultCallback";
+
+  window[callbackName]=function(data){
+   delete window[callbackName];
+   script.remove();
+   resolve(data);
+  };
+
+  script.onerror=function(){
+   delete window[callbackName];
+   script.remove();
+   reject(new Error("Rasm natijasini olishda xatolik"));
+  };
+
+  script.src=API+
+   "?action=imageResult&key="+encodeURIComponent(key)+
+   "&callback="+callbackName;
+
+  document.body.appendChild(script);
+ });
+}
+
+function wait(ms){
+ return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+function compressImage(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+
+  reader.onerror=()=>reject(new Error("Rasmni o‘qib bo‘lmadi"));
+
+  reader.onload=()=>{
+   const img=new Image();
+
+   img.onerror=()=>reject(new Error("Rasm ochilmadi"));
+
+   img.onload=()=>{
+    const maxSize=1200;
+    const ratio=Math.min(1,maxSize/Math.max(img.width,img.height));
+    const canvas=document.createElement("canvas");
+
+    canvas.width=Math.round(img.width*ratio);
+    canvas.height=Math.round(img.height*ratio);
+
+    const ctx=canvas.getContext("2d");
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+    canvas.toBlob(blob=>{
+     if(!blob){
+      reject(new Error("Rasmni tayyorlab bo‘lmadi"));
+      return;
+     }
+     resolve(blob);
+    },"image/jpeg",0.78);
+   };
+
+   img.src=reader.result;
+  };
+
+  reader.readAsDataURL(file);
+ });
+}
+
+async function uploadImage(){
+ const pin=document.getElementById("pin").value.trim();
+ const file=document.getElementById("imageFile").files[0];
+ const status=document.getElementById("status");
+ const button=document.getElementById("uploadBtn");
+
+ if(!pin){
+  status.textContent="Avval Admin PIN kiriting.";
+  return;
+ }
+
+ if(!file){
+  status.textContent="Avval kompyuterdan rasm tanlang.";
+  return;
+ }
+
+ if(!file.type.startsWith("image/")){
+  status.textContent="Faqat rasm faylini tanlang.";
+  return;
+ }
+
+ button.disabled=true;
+ status.textContent="Rasm tayyorlanmoqda...";
+
+ try{
+  const blob=await compressImage(file);
+  const base64=await new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(reader.result.split(",")[1]);
+   reader.onerror=()=>reject(new Error("Rasmni o‘qib bo‘lmadi"));
+   reader.readAsDataURL(blob);
+  });
+
+  const key="img"+Date.now()+Math.random().toString(36).slice(2,8);
+
+  status.textContent="Rasm Google Drive'ga yuklanmoqda...";
+
+  await sendData({
+   action:"uploadImage",
+   pin:pin,
+   uploadKey:key,
+   filename:"oson-bazar-"+Date.now()+".jpg",
+   mimeType:"image/jpeg",
+   base64:base64
+  });
+
+  let result=null;
+
+  for(let i=0;i<25;i++){
+   await wait(1500);
+   result=await getImageResult(key);
+   if(result && !result.pending)break;
+  }
+
+  if(!result || result.pending){
+   throw new Error("Javob kelmadi. Internetni tekshirib qayta urinib ko‘ring.");
+  }
+
+  if(!result.ok){
+   throw new Error(result.error || "Rasm yuklanmadi");
+  }
+
+  document.getElementById("image").value=result.url;
+  status.textContent="Rasm muvaffaqiyatli yuklandi! Endi «Saqlash»ni bosing.";
+
+ }catch(e){
+  status.textContent="Xatolik: "+e.message;
+ }finally{
+  button.disabled=false;
+ }
+}
+
+document.getElementById("imageFile").addEventListener("change",function(){
+ const file=this.files[0];
+ const preview=document.getElementById("preview");
+
+ if(!file){
+  preview.style.display="none";
+  return;
+ }
+
+ preview.src=URL.createObjectURL(file);
+ preview.style.display="block";
+});
 
 async function saveProduct(){
  const pin=document.getElementById("pin").value.trim();
@@ -117,14 +302,16 @@ async function saveProduct(){
   action:editingId?"update":"add",
   pin,name,category,price,months,image
  };
+
  if(editingId)data.id=editingId;
 
  status.textContent="So‘rov yuborilmoqda...";
+
  try{
   await sendData(data);
   status.textContent="So‘rov yuborildi. Ro‘yxatni birozdan keyin yangilang.";
   clearForm();
-  setTimeout(loadProducts,2000);
+  setTimeout(loadProducts,2500);
  }catch(e){
   status.textContent="Ulanishda xatolik yuz berdi.";
  }
@@ -133,6 +320,7 @@ async function saveProduct(){
 function editProduct(id){
  const p=products.find(x=>String(x.id)===String(id));
  if(!p)return;
+
  editingId=id;
  document.getElementById("name").value=p.name;
  document.getElementById("category").value=p.category;
@@ -145,15 +333,18 @@ function editProduct(id){
 
 async function deleteProduct(id){
  if(!confirm("Mahsulotni o‘chirmoqchimisiz?"))return;
+
  const pin=document.getElementById("pin").value.trim();
+
  if(!pin){
   alert("Avval Admin PIN kiriting.");
   return;
  }
+
  try{
   await sendData({action:"delete",pin,id});
   alert("O‘chirish so‘rovi yuborildi. Ro‘yxatni yangilang.");
-  setTimeout(loadProducts,2000);
+  setTimeout(loadProducts,2500);
  }catch(e){
   alert("Xatolik yuz berdi.");
  }
@@ -161,9 +352,12 @@ async function deleteProduct(id){
 
 function clearForm(){
  editingId=null;
- ["name","category","price","months","image"].forEach(id=>{
+
+ ["name","category","price","months","image","imageFile"].forEach(id=>{
   document.getElementById(id).value="";
  });
+
+ document.getElementById("preview").style.display="none";
  document.getElementById("formTitle").textContent="Mahsulot qo‘shish";
 }
 
@@ -171,7 +365,3 @@ loadProducts();
 </script>
 </body>
 </html>
-
-
-
-
