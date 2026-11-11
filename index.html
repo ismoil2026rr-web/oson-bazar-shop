@@ -5,88 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#090909">
 <title>OSON_BAZAR — Online Market</title>
-
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#090909;color:#fff;
- font-family:Arial,sans-serif
-}
-header{
- background:#101010;border-bottom:1px solid #5b4924;
- padding:18px 5%;display:flex;align-items:center;
- justify-content:space-between;gap:15px;flex-wrap:wrap
-}
+body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
+header{background:#101010;border-bottom:1px solid #5b4924;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
 .logo{font-size:27px;font-weight:900;color:#d8b45a;letter-spacing:2px}
 .tagline{font-size:12px;color:#999;margin-top:5px}
 .actions{display:flex;gap:8px}
-button{
- cursor:pointer;border:1px solid #d8b45a;border-radius:7px;
- padding:10px 15px;background:#d8b45a;color:#111;font-weight:bold
-}
+button{cursor:pointer;border:1px solid #d8b45a;border-radius:7px;padding:10px 15px;background:#d8b45a;color:#111;font-weight:bold}
 button.active{background:#111;color:#d8b45a}
 main{max-width:1150px;margin:auto;padding:30px 18px}
-.search{
- width:100%;padding:15px;background:#191919;
- border:1px solid #514326;border-radius:9px;
- color:white;font-size:15px;outline:none
-}
+.search{width:100%;padding:15px;background:#191919;border:1px solid #514326;border-radius:9px;color:white;font-size:15px;outline:none}
 h2{color:#d8b45a;margin-top:30px}
 .categories{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
-.category{
- padding:11px 15px;border:1px solid #514326;
- border-radius:8px;color:#ddd;background:#171717;
- cursor:pointer
-}
+.category{padding:11px 15px;border:1px solid #514326;border-radius:8px;color:#ddd;background:#171717;cursor:pointer}
 .category.active{background:#d8b45a;color:#111}
-.grid{
- display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
- gap:17px;margin-top:25px
-}
-.product{
- background:#171717;border:1px solid #44391f;
- border-radius:12px;overflow:hidden
-}
-.product img{
- width:100%;height:190px;object-fit:contain;
- background:#fff;display:block
-}
-.no-image{
- height:190px;display:flex;align-items:center;
- justify-content:center;color:#888;background:#202020
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:17px;margin-top:25px}
+.product{background:#171717;border:1px solid #44391f;border-radius:12px;overflow:hidden}
+.product img{width:100%;height:190px;object-fit:contain;background:#fff;display:block}
+.no-image{height:190px;display:flex;align-items:center;justify-content:center;color:#888;background:#202020}
 .product-info{padding:15px}
 .product-name{font-size:16px;font-weight:bold;min-height:38px}
 .product-category{font-size:12px;color:#aaa;margin-top:7px}
 .total-price{color:#fff;font-size:17px;font-weight:bold;margin-top:14px}
-.monthly{
- color:#d8b45a;font-size:14px;font-weight:bold;margin-top:8px
-}
+.monthly{color:#d8b45a;font-size:14px;font-weight:bold;margin-top:8px}
 .term{font-size:12px;color:#aaa;margin-top:5px}
-.empty{
- margin-top:25px;padding:55px 15px;text-align:center;
- background:#151515;border:1px solid #393020;border-radius:13px;
- color:#aaa
-}
+.order-btn{width:100%;margin-top:15px;padding:12px}
+.empty{margin-top:25px;padding:55px 15px;text-align:center;background:#151515;border:1px solid #393020;border-radius:13px;color:#aaa}
 .empty h3{color:#d8b45a}
 #loading{color:#d8b45a;text-align:center;padding:30px}
-footer{
- text-align:center;padding:25px;color:#777;
- border-top:1px solid #332b1b;margin-top:55px
-}
+footer{text-align:center;padding:25px;color:#777;border-top:1px solid #332b1b;margin-top:55px}
+
+/* Buyurtma oynasi */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:18px;z-index:1000}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:420px;background:#171717;border:1px solid #d8b45a;border-radius:14px;padding:22px}
+.modal-box h2{margin:0 0 10px;color:#d8b45a}
+.modal-product{color:#ccc;font-size:14px;margin-bottom:18px}
+.modal-box label{display:block;margin:12px 0 6px;color:#ddd;font-size:13px}
+.modal-box input,.modal-box textarea{width:100%;padding:13px;background:#090909;color:white;border:1px solid #514326;border-radius:7px;outline:none;font-size:15px}
+.modal-box textarea{resize:vertical;min-height:75px}
+.modal-buttons{display:flex;gap:10px;margin-top:18px}
+.modal-buttons button{flex:1}
+.cancel-btn{background:#222;color:#ddd;border-color:#555}
+#orderStatus{font-size:13px;margin-top:14px;line-height:1.5}
 @media(max-width:500px){
- header{padding:15px}
- .logo{font-size:23px}
+ header{padding:15px}.logo{font-size:23px}
  main{padding:22px 13px}
  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
  .product img,.no-image{height:145px}
  .product-info{padding:10px}
  .product-name{font-size:14px}
  .total-price{font-size:14px}
+ .order-btn{font-size:12px;padding:10px 5px}
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -101,12 +75,9 @@ footer{
 </header>
 
 <main>
-
  <input class="search" id="search" placeholder="Mahsulot qidirish...">
-
  <h2 id="catTitle">Kategoriyalar</h2>
  <div class="categories" id="categories"></div>
-
  <h2 id="productsTitle">Mahsulotlar</h2>
  <div id="loading">Mahsulotlar yuklanmoqda...</div>
  <div class="grid" id="products"></div>
@@ -114,10 +85,34 @@ footer{
   <h3 id="emptyTitle">Hozircha mahsulotlar yo‘q</h3>
   <p id="emptyText">Yangi mahsulotlar tez orada joylashtiriladi.</p>
  </div>
-
 </main>
 
 <footer>© OSON_BAZAR</footer>
+
+<!-- Buyurtma oynasi -->
+<div class="modal" id="orderModal">
+ <div class="modal-box">
+  <h2 id="orderTitle">Buyurtma berish</h2>
+  <div class="modal-product" id="selectedProduct"></div>
+
+  <form id="orderForm">
+   <label id="nameLabel" for="customerName">Ismingiz</label>
+   <input id="customerName" type="text" placeholder="Ismingizni kiriting" required maxlength="60">
+
+   <label id="phoneLabel" for="customerPhone">Telefon raqamingiz</label>
+   <input id="customerPhone" type="tel" placeholder="+998 90 123 45 67" required maxlength="20">
+
+   <label id="commentLabel" for="customerComment">Izoh (ixtiyoriy)</label>
+   <textarea id="customerComment" placeholder="Qo‘shimcha ma’lumot"></textarea>
+
+   <div class="modal-buttons">
+    <button type="submit" id="sendOrder">Buyurtmani yuborish</button>
+    <button type="button" class="cancel-btn" id="closeOrder" onclick="closeOrderModal()">Yopish</button>
+   </div>
+   <div id="orderStatus"></div>
+  </form>
+ </div>
+</div>
 
 <script>
 const API="https://script.google.com/macros/s/AKfycbyQ4QCo-fmbwvMInEggLIdMMYpsCw_tBg4KKbCZEhxzTnsuMeMn5wYB0HDBUn_LCZL7/exec";
@@ -125,41 +120,45 @@ const API="https://script.google.com/macros/s/AKfycbyQ4QCo-fmbwvMInEggLIdMMYpsCw
 let products=[];
 let lang="uz";
 let selectedCategory="all";
+let selectedProduct=null;
 
 const translations={
  uz:{
   tagline:"Qulay xaridlar — qulay to‘lovlar",
   search:"Mahsulot qidirish...",
-  cat:"Kategoriyalar",
-  products:"Mahsulotlar",
-  all:"Barchasi",
-  empty:"Hozircha mahsulotlar yo‘q",
+  cat:"Kategoriyalar",products:"Mahsulotlar",
+  all:"Barchasi",empty:"Hozircha mahsulotlar yo‘q",
   emptyText:"Yangi mahsulotlar tez orada joylashtiriladi.",
   loading:"Mahsulotlar yuklanmoqda...",
   error:"Mahsulotlarni yuklab bo‘lmadi. Sahifani yangilang.",
-  total:"Umumiy narx:",
-  monthly:"Oylik to‘lov:",
-  term:"Muddat:",
-  months:"oy",
-  noImage:"Rasm mavjud emas",
-  notFound:"Mahsulot topilmadi"
+  total:"Umumiy narx:",monthly:"Oylik to‘lov:",
+  term:"Muddat:",months:"oy",noImage:"Rasm mavjud emas",
+  notFound:"Mahsulot topilmadi",order:"Buyurtma berish",
+  orderTitle:"Buyurtma berish",name:"Ismingiz",
+  phone:"Telefon raqamingiz",comment:"Izoh (ixtiyoriy)",
+  send:"Buyurtmani yuborish",close:"Yopish",
+  sending:"Buyurtma yuborilmoqda...",
+  sent:"Buyurtma so‘rovi yuborildi. Telegram botga xabar kelganini tekshiring.",
+  failed:"Yuborishda xatolik yuz berdi. Qayta urinib ko‘ring.",
+  required:"Ism va telefon raqamini to‘g‘ri kiriting."
  },
  ru:{
   tagline:"Удобные покупки — удобная оплата",
-  search:"Поиск товаров...",
-  cat:"Категории",
-  products:"Товары",
-  all:"Все",
-  empty:"Пока товаров нет",
-  emptyText:"Новые товары скоро появятся.",
+  search:"Поиск товаров...",cat:"Категории",
+  products:"Товары",all:"Все",
+  empty:"Пока товаров нет",emptyText:"Новые товары скоро появятся.",
   loading:"Загрузка товаров...",
   error:"Не удалось загрузить товары. Обновите страницу.",
-  total:"Полная цена:",
-  monthly:"Ежемесячный платёж:",
-  term:"Срок:",
-  months:"мес.",
-  noImage:"Нет изображения",
-  notFound:"Товар не найден"
+  total:"Полная цена:",monthly:"Ежемесячный платёж:",
+  term:"Срок:",months:"мес.",noImage:"Нет изображения",
+  notFound:"Товар не найден",order:"Оформить заказ",
+  orderTitle:"Оформить заказ",name:"Ваше имя",
+  phone:"Номер телефона",comment:"Комментарий (необязательно)",
+  send:"Отправить заказ",close:"Закрыть",
+  sending:"Отправка заказа...",
+  sent:"Запрос отправлен. Проверьте, пришло ли сообщение в Telegram-бот.",
+  failed:"Ошибка отправки. Попробуйте ещё раз.",
+  required:"Введите корректные имя и номер телефона."
  }
 };
 
@@ -171,7 +170,6 @@ function getProducts(){
  return new Promise((resolve,reject)=>{
   const callback="marketCallback_"+Date.now();
   const script=document.createElement("script");
-
   const timer=setTimeout(()=>{
    delete window[callback];
    script.remove();
@@ -211,15 +209,10 @@ function renderCategories(){
  };
  box.appendChild(allButton);
 
- const categories=[...new Set(
-  products.map(p=>p.category).filter(Boolean)
- )];
-
+ const categories=[...new Set(products.map(p=>p.category).filter(Boolean))];
  categories.forEach(category=>{
   const button=document.createElement("button");
-  button.className="category"+(
-   selectedCategory===category?" active":""
-  );
+  button.className="category"+(selectedCategory===category?" active":"");
   button.textContent=category;
   button.onclick=()=>{
    selectedCategory=category;
@@ -230,21 +223,30 @@ function renderCategories(){
  });
 }
 
+function openOrderModal(product){
+ selectedProduct=product;
+ document.getElementById("selectedProduct").textContent=
+  product.name+" — "+formatPrice(product.price);
+ document.getElementById("orderStatus").textContent="";
+ document.getElementById("orderForm").reset();
+ document.getElementById("orderModal").classList.add("show");
+}
+
+function closeOrderModal(){
+ document.getElementById("orderModal").classList.remove("show");
+}
+
 function renderProducts(){
  const box=document.getElementById("products");
  const empty=document.getElementById("empty");
  const search=document.getElementById("search").value.toLowerCase().trim();
-
  box.innerHTML="";
 
  const filtered=products.filter(p=>{
   const matchesSearch=
    String(p.name||"").toLowerCase().includes(search)||
    String(p.category||"").toLowerCase().includes(search);
-
-  const matchesCategory=
-   selectedCategory==="all"||p.category===selectedCategory;
-
+  const matchesCategory=selectedCategory==="all"||p.category===selectedCategory;
   return matchesSearch&&matchesCategory;
  });
 
@@ -266,7 +268,7 @@ function renderProducts(){
   if(p.image){
    const img=document.createElement("img");
    img.src=p.image;
-   img.alt=p.name;
+   img.alt=p.name||"Mahsulot";
    img.loading="lazy";
    img.onerror=()=>{
     const placeholder=document.createElement("div");
@@ -304,11 +306,8 @@ function renderProducts(){
   const months=Number(p.months)||0;
 
   if(months>0){
-   const payment=Math.ceil(price/months);
    monthly.textContent=translations[lang].monthly+" "+
-    formatPrice(payment);
-  }else{
-   monthly.textContent="";
+    formatPrice(Math.ceil(price/months));
   }
 
   const term=document.createElement("div");
@@ -316,7 +315,12 @@ function renderProducts(){
   term.textContent=months>0?
    translations[lang].term+" "+months+" "+translations[lang].months:"";
 
-  info.append(name,category,total,monthly,term);
+  const orderButton=document.createElement("button");
+  orderButton.className="order-btn";
+  orderButton.textContent=translations[lang].order;
+  orderButton.onclick=()=>openOrderModal(p);
+
+  info.append(name,category,total,monthly,term,orderButton);
   card.appendChild(info);
   box.appendChild(card);
  });
@@ -330,16 +334,77 @@ function setLang(language){
  document.getElementById("ru").classList.toggle("active",language==="ru");
 
  const t=translations[language];
-
  document.getElementById("tagline").textContent=t.tagline;
  document.getElementById("search").placeholder=t.search;
  document.getElementById("catTitle").textContent=t.cat;
  document.getElementById("productsTitle").textContent=t.products;
  document.getElementById("loading").textContent=t.loading;
 
+ document.getElementById("orderTitle").textContent=t.orderTitle;
+ document.getElementById("nameLabel").textContent=t.name;
+ document.getElementById("phoneLabel").textContent=t.phone;
+ document.getElementById("commentLabel").textContent=t.comment;
+ document.getElementById("sendOrder").textContent=t.send;
+ document.getElementById("closeOrder").textContent=t.close;
+ document.getElementById("customerName").placeholder=t.name;
+ document.getElementById("customerPhone").placeholder="+998 90 123 45 67";
+
  renderCategories();
  renderProducts();
 }
+
+document.getElementById("orderForm").addEventListener("submit",async function(e){
+ e.preventDefault();
+
+ if(!selectedProduct)return;
+
+ const name=document.getElementById("customerName").value.trim();
+ const phone=document.getElementById("customerPhone").value.trim();
+ const comment=document.getElementById("customerComment").value.trim();
+ const status=document.getElementById("orderStatus");
+ const sendButton=document.getElementById("sendOrder");
+
+ if(name.length<2||phone.length<7){
+  status.style.color="#ff7777";
+  status.textContent=translations[lang].required;
+  return;
+ }
+
+ const orderData={
+  name:name,
+  phone:phone,
+  product:selectedProduct.name,
+  comment:comment
+ };
+
+ sendButton.disabled=true;
+ status.style.color="#d8b45a";
+ status.textContent=translations[lang].sending;
+
+ try{
+  await fetch(API,{
+   method:"POST",
+   mode:"no-cors",
+   headers:{"Content-Type":"text/plain;charset=UTF-8"},
+   body:JSON.stringify(orderData)
+  });
+
+  status.style.color="#8ed69a";
+  status.textContent=translations[lang].sent;
+  this.reset();
+ }catch(error){
+  status.style.color="#ff7777";
+  status.textContent=translations[lang].failed;
+ }finally{
+  sendButton.disabled=false;
+ }
+});
+
+document.getElementById("search").addEventListener("input",renderProducts);
+
+document.getElementById("orderModal").addEventListener("click",function(e){
+ if(e.target===this)closeOrderModal();
+});
 
 async function loadProducts(){
  const loading=document.getElementById("loading");
@@ -348,28 +413,21 @@ async function loadProducts(){
 
  try{
   const data=await getProducts();
-
   if(!Array.isArray(data))throw new Error("Noto‘g‘ri javob");
 
   products=data;
   loading.hidden=true;
-
   renderCategories();
   renderProducts();
-
  }catch(error){
   loading.hidden=false;
   loading.textContent=translations[lang].error;
  }
 }
 
-document.getElementById("search").addEventListener("input",renderProducts);
-
 setLang("uz");
 loadProducts();
 </script>
-
 </body>
 </html>
-
 
